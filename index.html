@@ -240,6 +240,13 @@
             const [inHour, inMin] = clockIn.split(':').map(Number);
             const [outHour, outMin] = clockOut.split(':').map(Number);
             const totalMinutes = (outHour * 60 + outMin) - (inHour * 60 + inMin);
+            
+            // Validate that clock-out is after clock-in
+            if (totalMinutes < 0) {
+                showMessage('Clock Out time must be after Clock In time.', true);
+                return;
+            }
+            
             const totalHours = (totalMinutes / 60).toFixed(2);
             
             const newEntry = {
@@ -279,13 +286,9 @@
 
             // Sort entries by date for a chronological email body
             selectedEntries.sort((a, b) => new Date(a.date) - new Date(b.date));
-
             const subject = `Attendance Summary - ${selectedEntries.length} Days`;
-            
-            let body = `Hello,
-I am writing to provide a summary of my recent attendance.
-
-`;
+            const newLine = '\n';
+            let body = `Hello,${newLine}I am writing to provide a summary of my recent attendance.${newLine}${newLine}`;
             
             selectedEntries.forEach(entry => {
                 const formattedDate = new Date(entry.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
@@ -295,21 +298,18 @@ I am writing to provide a summary of my recent attendance.
                 if (entry.isVacation) status.push('Vacation');
                 if (status.length === 0) status.push('Regular Attendance');
 
-                body += `---
-Date: ${formattedDate}
-Status: ${status.join(', ')}
-Clock In: ${entry.clockIn}
-Clock Out: ${entry.clockOut}
-Total Hours: ${entry.totalHours}
-Overtime: ${entry.overtime} hours
-Reason: ${entry.notes || 'N/A'}
-
-`;
+                body += `---${newLine}`;
+                body += `Date: ${formattedDate}${newLine}`;
+                body += `Status: ${status.join(', ')}${newLine}`;
+                body += `Clock In: ${entry.clockIn}${newLine}`;
+                body += `Clock Out: ${entry.clockOut}${newLine}`;
+                body += `Total Hours: ${entry.totalHours}${newLine}`;
+                body += `Overtime: ${entry.overtime} hours${newLine}`;
+                body += `Reason: ${entry.notes || 'N/A'}${newLine}`;
+                body += `${newLine}`;
             });
 
-            body += `
-Best,
-${yourName || '[Your Name]'}`;
+            body += `Best,${newLine}${yourName || '[Your Name]'}`;
 
             const mailtoLink = `mailto:${recipient}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
             window.location.href = mailtoLink;
