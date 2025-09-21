@@ -25,6 +25,14 @@
             border-color: #4f46e5;
             background-color: #eef2ff;
         }
+        .email-history-item {
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .email-history-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
     </style>
 </head>
 <body class="p-4 md:p-8 flex flex-col items-center">
@@ -247,27 +255,45 @@
                 return;
             }
 
-            // Sort by date, newest first
-            history.sort((a, b) => new Date(b.date) - new Date(a.date));
+            // Get unique email recipients
+            const uniqueHistory = Array.from(new Set(history.map(item => item.recipient)))
+                                     .map(recipient => {
+                                         const lastEntry = history.find(item => item.recipient === recipient);
+                                         return { recipient: lastEntry.recipient, senderName: lastEntry.senderName, date: lastEntry.date };
+                                     });
 
-            history.forEach(item => {
+            // Sort by date, newest first
+            uniqueHistory.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            uniqueHistory.forEach(item => {
                 const historyElement = document.createElement('div');
-                historyElement.className = 'bg-gray-50 p-4 rounded-lg shadow-sm border border-gray-200';
+                historyElement.className = 'email-history-item bg-gray-50 p-4 rounded-lg shadow-sm border border-gray-200';
+                historyElement.dataset.recipient = item.recipient;
+                historyElement.dataset.senderName = item.senderName;
                 
                 const formattedDate = new Date(item.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
                 const formattedTime = new Date(item.date).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
 
                 historyElement.innerHTML = `
                     <div class="flex items-center justify-between text-sm text-gray-600 mb-1">
-                        <span>Sent on: ${formattedDate} at ${formattedTime}</span>
+                        <span>Last used: ${formattedDate} at ${formattedTime}</span>
                     </div>
                     <p class="text-md font-semibold text-gray-800">To: <span class="text-indigo-700">${item.recipient}</span></p>
                     <p class="text-sm text-gray-600">From: ${item.senderName || 'N/A'}</p>
                 `;
                 emailHistoryList.appendChild(historyElement);
             });
-        }
 
+            // Add click listener to populate the email input
+            document.querySelectorAll('.email-history-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    emailRecipientInput.value = item.dataset.recipient;
+                    yourNameInput.value = item.dataset.senderName;
+                    showMessage(`Email address for ${item.dataset.recipient} and name for ${item.dataset.senderName} has been selected.`);
+                });
+            });
+        }
+        
         // Form submission handler
         attendanceForm.addEventListener('submit', (e) => {
             e.preventDefault();
@@ -361,11 +387,26 @@
 
             body += `Best,${newLine}${yourName || '[Your Name]'}`;
             
-            // Build the mailto link with encoded subject and body
             const subject = `Attendance Summary - ${selectedEntries.length} Days`;
-            const mailtoLink = `mailto:${recipient}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-
-            window.location.href = mailtoLink;
+            
+            // Mobile detection using user agent
+            const isMobile = /Mobi|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            
+            if (isMobile) {
+                // For mobile, copy text to clipboard and open email app without the body
+                navigator.clipboard.writeText(body).then(() => {
+                    showMessage('Email text copied to clipboard! You can now paste it into your email app.');
+                    const mailtoLink = `mailto:${recipient}?subject=${encodeURIComponent(subject)}`;
+                    window.location.href = mailtoLink;
+                }).catch(err => {
+                    console.error('Failed to copy text: ', err);
+                    showMessage('Failed to copy email text. Please try again.', true);
+                });
+            } else {
+                // For desktop, use the full mailto link with the body
+                const mailtoLink = `mailto:${recipient}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+                window.location.href = mailtoLink;
+            }
 
             // Save the email history after the user has been redirected
             const emailHistory = loadEmailHistory();
