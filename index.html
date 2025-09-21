@@ -8,11 +8,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
-    <!-- Updated Icon for Home Screen on iOS and a general favicon using a scalable SVG -->
-    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ffffff' width='180' height='180' style='background-color:%234f46e5; border-radius:15%;'%3E%3Cpath d='M12 2L1 21h22L12 2zM5.29 19L12 5.39 18.71 19H5.29z'/%3E%3C/svg%3E">
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ffffff' width='32' height='32' style='background-color:%234f46e5; border-radius:15%;'%3E%3Cpath d='M12 2L1 21h22L12 2zM5.29 19L12 5.39 18.71 19H5.29z'/%3E%3C/svg%3E" sizes="any" type="image/svg+xml">
-    <!-- Web App Manifest for Android -->
-    <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjogIkF0dGVuZGFuY2UgQXBwIiwic2hvcnRfbmFtZSI6ICJBdHRlbmRhbmNlIiwiaWNvbnMiOiBbeyJzcmMiOiAiZGF0YTppbWFnZS9zdmcreG1sO2Jhc2U2NCxQSE52Y21Wb2RYSnpaVzUwYjI0Z09nPT0iLCAic2l6ZXMiOiAiMTkyeDE5MiIsICJ0eXBlIjogImltYWdlL3N2Zyt4bWwifV0sInN0YXJ0X3VybCI6ICIuIiwiZGlzcGxheSI6ICJzdGFuZGFsb25lIiwiYmFja2dyb3VuZF9jb2xvciI6ICIjZmZmZmZmIiwidGhlbWVfY29sb3IiOiAiIzRmNDZlNSIKfQ==" />
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -44,7 +39,7 @@
 
     <div class="w-full max-w-4xl bg-white p-6 rounded-lg shadow-xl">
         <h1 class="text-3xl font-bold text-center text-gray-800 mb-6" id="app-title">Attendance Email Generator</h1>
-
+        
         <!-- Language Selector -->
         <div class="flex justify-end mb-4">
             <select id="language-selector" class="p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
@@ -147,7 +142,7 @@
         </div>
     </div>
 
-    <script type="module">
+    <script>
         // UI element references
         const attendanceForm = document.getElementById('attendance-form');
         const attendanceList = document.getElementById('attendance-list');
@@ -205,7 +200,8 @@
                 'message-saved': 'Entry saved successfully!',
                 'message-select-entries': 'Please select at least one entry from the history list.',
                 'message-enter-email': 'Please enter a manager\'s email.',
-                'message-copied': 'Email text copied to clipboard! You can now paste it into your email app.',
+                'message-copied': 'Email text copied to clipboard!',
+                'message-paste-instruction': 'Now, please **paste** the email body into your email app.',
                 'message-copy-failed': 'Failed to copy email text. Please try again.',
                 'message-selected-count': '{{count}} entries selected.',
                 'message-selection-cleared': 'Entry selection cleared.',
@@ -261,7 +257,8 @@
                 'message-saved': 'تم حفظ الإدخال بنجاح!',
                 'message-select-entries': 'يرجى تحديد إدخال واحد على الأقل من سجل الحضور.',
                 'message-enter-email': 'يرجى إدخال بريد المدير الإلكتروني.',
-                'message-copied': 'تم نسخ نص البريد الإلكتروني إلى الحافظة! يمكنك الآن لصقه في تطبيق البريد الإلكتروني الخاص بك.',
+                'message-copied': 'تم نسخ نص البريد الإلكتروني إلى الحافظة!',
+                'message-paste-instruction': 'الآن، يرجى **لصق** نص البريد الإلكتروني في تطبيق البريد الخاص بك.',
                 'message-copy-failed': 'فشل في نسخ نص البريد الإلكتروني. يرجى المحاولة مرة أخرى.',
                 'message-selected-count': 'تم تحديد {{count}} إدخالات.',
                 'message-selection-cleared': 'تم إلغاء تحديد الإدخالات.',
@@ -594,7 +591,33 @@
             
             const subject = translations[currentLang]['email-subject'].replace('{{count}}', selectedEntries.length);
             
-            const mailtoLink = `mailto:${recipient}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            // First, copy the text to the clipboard.
+            const tempTextArea = document.createElement('textarea');
+            tempTextArea.value = body;
+            tempTextArea.style.position = 'fixed';
+            tempTextArea.style.left = '0';
+            tempTextArea.style.top = '0';
+            tempTextArea.style.opacity = '0';
+            document.body.appendChild(tempTextArea);
+            tempTextArea.focus();
+            tempTextArea.select();
+            
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    showMessage(translations[currentLang]['message-copied'] + ' ' + translations[currentLang]['message-paste-instruction']);
+                } else {
+                    throw new Error('Document.execCommand failed');
+                }
+            } catch (e) {
+                console.error('Failed to copy text:', e);
+                showMessage(translations[currentLang]['message-copy-failed'], true);
+            } finally {
+                document.body.removeChild(tempTextArea);
+            }
+            
+            // Then, open the mail app with only recipient and subject.
+            const mailtoLink = `mailto:${recipient}?subject=${encodeURIComponent(subject)}`;
             window.location.href = mailtoLink;
 
             // Save the email history after the user has been redirected
