@@ -38,23 +38,31 @@
 <body class="p-4 md:p-8 flex flex-col items-center">
 
     <div class="w-full max-w-4xl bg-white p-6 rounded-lg shadow-xl">
-        <h1 class="text-3xl font-bold text-center text-gray-800 mb-6">Attendance Email Generator</h1>
+        <h1 class="text-3xl font-bold text-center text-gray-800 mb-6" id="app-title">Attendance Email Generator</h1>
+
+        <!-- Language Selector -->
+        <div class="flex justify-end mb-4">
+            <select id="language-selector" class="p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                <option value="en">English</option>
+                <option value="ar">العربية</option>
+            </select>
+        </div>
         
         <form id="attendance-form" class="space-y-4">
             <!-- Date Input -->
             <div>
-                <label for="date" class="block text-gray-700 font-medium mb-1">Date</label>
+                <label for="date" class="block text-gray-700 font-medium mb-1" data-key="label-date">Date</label>
                 <input type="date" id="date" required class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
             </div>
 
             <!-- Clock In/Out -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                    <label for="clock-in" class="block text-gray-700 font-medium mb-1">Clock In</label>
+                    <label for="clock-in" class="block text-gray-700 font-medium mb-1" data-key="label-clock-in">Clock In</label>
                     <input type="time" id="clock-in" required class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
                 </div>
                 <div>
-                    <label for="clock-out" class="block text-gray-700 font-medium mb-1">Clock Out</label>
+                    <label for="clock-out" class="block text-gray-700 font-medium mb-1" data-key="label-clock-out">Clock Out</label>
                     <input type="time" id="clock-out" required class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
                 </div>
             </div>
@@ -62,31 +70,31 @@
             <!-- Overtime & Leave -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                    <label for="overtime" class="block text-gray-700 font-medium mb-1">Overtime (hours)</label>
+                    <label for="overtime" class="block text-gray-700 font-medium mb-1" data-key="label-overtime">Overtime (hours)</label>
                     <input type="number" id="overtime" value="0" min="0" step="0.5" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
                 </div>
                 <div class="flex items-center gap-2 mt-7">
                     <input type="checkbox" id="sick-leave" class="h-5 w-5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
-                    <label for="sick-leave" class="text-gray-700 font-medium">Sick Leave</label>
+                    <label for="sick-leave" class="text-gray-700 font-medium" data-key="label-sick-leave">Sick Leave</label>
                 </div>
                 <div class="flex items-center gap-2 mt-7">
                     <input type="checkbox" id="vacation" class="h-5 w-5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
-                    <label for="vacation" class="text-gray-700 font-medium">Vacation</label>
+                    <label for="vacation" class="text-gray-700 font-medium" data-key="label-vacation">Vacation</label>
                 </div>
             </div>
 
             <div class="flex items-center gap-2">
                 <input type="checkbox" id="is-late" class="h-5 w-5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
-                <label for="is-late" class="text-gray-700 font-medium">Running Late?</label>
+                <label for="is-late" class="text-gray-700 font-medium" data-key="label-is-late">Running Late?</label>
             </div>
             
             <!-- Notes / Reason -->
             <div>
-                <label for="notes" class="block text-gray-700 font-medium mb-1">Reason for Late Arrival or Other Notes</label>
-                <textarea id="notes" rows="3" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"></textarea>
+                <label for="notes" class="block text-gray-700 font-medium mb-1" data-key="label-notes">Reason for Late Arrival or Other Notes</label>
+                <textarea id="notes" rows="3" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" data-key="placeholder-notes" placeholder="Optional notes..."></textarea>
             </div>
             
-            <button id="submit-btn" type="submit" class="w-full bg-indigo-600 text-white font-bold py-3 px-4 rounded-md hover:bg-indigo-700 transition-colors duration-200">
+            <button id="submit-btn" type="submit" class="w-full bg-indigo-600 text-white font-bold py-3 px-4 rounded-md hover:bg-indigo-700 transition-colors duration-200" data-key="button-save">
                 Save Entry
             </button>
         </form>
@@ -95,26 +103,26 @@
     </div>
     
     <div class="w-full max-w-4xl mt-8 p-6 bg-white rounded-lg shadow-xl">
-        <h2 class="text-2xl font-bold text-gray-800 mb-4">Attendance History</h2>
+        <h2 class="text-2xl font-bold text-gray-800 mb-4" data-key="title-history">Attendance History</h2>
         <div id="attendance-list" class="space-y-4">
-            <p class="text-gray-500 text-center">No entries found. Add your first entry above.</p>
+            <p class="text-gray-500 text-center" data-key="no-entries">No entries found. Add your first entry above.</p>
         </div>
     </div>
 
     <!-- Email Notification Section -->
     <div class="w-full max-w-4xl mt-8 p-6 bg-white rounded-lg shadow-xl">
-        <h2 class="text-2xl font-bold text-gray-800 mb-4">Send Notification</h2>
-        <p class="text-gray-600 mb-4">Click one or more entries above to select them, then enter a manager's email to generate an email for those entries.</p>
+        <h2 class="text-2xl font-bold text-gray-800 mb-4" data-key="title-send-notification">Send Notification</h2>
+        <p class="text-gray-600 mb-4" data-key="text-send-notification">Click one or more entries above to select them, then enter a manager's email to generate an email for those entries.</p>
         <div class="space-y-4">
             <div>
-                <label for="your-name" class="block text-gray-700 font-medium mb-1">Your Name</label>
-                <input type="text" id="your-name" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="e.g., Jane Doe">
+                <label for="your-name" class="block text-gray-700 font-medium mb-1" data-key="label-your-name">Your Name</label>
+                <input type="text" id="your-name" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" data-key="placeholder-your-name" placeholder="e.g., Jane Doe">
             </div>
             <div>
-                <label for="email-recipient" class="block text-gray-700 font-medium mb-1">Manager's Email</label>
-                <input type="email" id="email-recipient" required class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="e.g., manager@company.com">
+                <label for="email-recipient" class="block text-gray-700 font-medium mb-1" data-key="label-manager-email">Manager's Email</label>
+                <input type="email" id="email-recipient" required class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" data-key="placeholder-manager-email" placeholder="e.g., manager@company.com">
             </div>
-            <button id="generate-email-btn" type="button" class="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-md hover:bg-blue-700 transition-colors duration-200">
+            <button id="generate-email-btn" type="button" class="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-md hover:bg-blue-700 transition-colors duration-200" data-key="button-generate-email">
                 Generate Email
             </button>
         </div>
@@ -122,9 +130,9 @@
 
     <!-- Email History Section -->
     <div class="w-full max-w-4xl mt-8 p-6 bg-white rounded-lg shadow-xl">
-        <h2 class="text-2xl font-bold text-gray-800 mb-4">Email History</h2>
+        <h2 class="text-2xl font-bold text-gray-800 mb-4" data-key="title-email-history">Email History</h2>
         <div id="email-history-list" class="space-y-4">
-            <p class="text-gray-500 text-center">No emails sent yet.</p>
+            <p class="text-gray-500 text-center" data-key="no-email-history">No emails sent yet.</p>
         </div>
     </div>
 
@@ -137,9 +145,152 @@
         const emailRecipientInput = document.getElementById('email-recipient');
         const yourNameInput = document.getElementById('your-name');
         const emailHistoryList = document.getElementById('email-history-list');
+        const languageSelector = document.getElementById('language-selector');
 
         let selectedEntries = [];
+        let currentLang = 'en';
 
+        const translations = {
+            'en': {
+                'app-title': 'Attendance Email Generator',
+                'label-date': 'Date',
+                'label-clock-in': 'Clock In',
+                'label-clock-out': 'Clock Out',
+                'label-overtime': 'Overtime (hours)',
+                'label-sick-leave': 'Sick Leave',
+                'label-vacation': 'Vacation',
+                'label-is-late': 'Running Late?',
+                'label-notes': 'Reason for Late Arrival or Other Notes',
+                'placeholder-notes': 'Optional notes...',
+                'button-save': 'Save Entry',
+                'title-history': 'Attendance History',
+                'no-entries': 'No entries found. Add your first entry above.',
+                'title-send-notification': 'Send Notification',
+                'text-send-notification': 'Click one or more entries above to select them, then enter a manager\'s email to generate an email for those entries.',
+                'label-your-name': 'Your Name',
+                'placeholder-your-name': 'e.g., Jane Doe',
+                'label-manager-email': 'Manager\'s Email',
+                'placeholder-manager-email': 'e.g., manager@company.com',
+                'button-generate-email': 'Generate Email',
+                'title-email-history': 'Email History',
+                'no-email-history': 'No emails sent yet.',
+                'status-late': 'Late Arrival',
+                'status-sick': 'Sick Leave',
+                'status-vacation': 'Vacation',
+                'status-regular': 'Regular Attendance',
+                'email-subject': 'Attendance Summary - {{count}} Days',
+                'email-body-salutation': 'Hello,',
+                'email-body-intro': 'I am writing to provide a summary of my recent attendance.',
+                'email-body-notes': 'Reason: ',
+                'email-body-date': 'Date:',
+                'email-body-status': 'Status:',
+                'email-body-clock-in': 'Clock In:',
+                'email-body-clock-out': 'Clock Out:',
+                'email-body-total-hours': 'Total Hours:',
+                'email-body-overtime': 'Overtime:',
+                'email-body-best': 'Best,',
+                'email-body-your-name': '[Your Name]',
+                'message-saved': 'Entry saved successfully!',
+                'message-select-entries': 'Please select at least one entry from the history list.',
+                'message-enter-email': 'Please enter a manager\'s email.',
+                'message-copied': 'Email text copied to clipboard! You can now paste it into your email app.',
+                'message-copy-failed': 'Failed to copy email text. Please try again.',
+                'message-selected-count': '{{count}} entries selected.',
+                'message-selection-cleared': 'Entry selection cleared.',
+                'message-history-selected': 'Email address for {{recipient}} and name for {{senderName}} has been selected.',
+                'message-date-error': 'Clock Out time must be after Clock In time.',
+                'message-fill-fields': 'Please fill in all required fields.',
+                'history-last-used': 'Last used:',
+                'history-to': 'To:',
+                'history-from': 'From:',
+                'history-na': 'N/A'
+            },
+            'ar': {
+                'app-title': 'مولد بريد الحضور الإلكتروني',
+                'label-date': 'التاريخ',
+                'label-clock-in': 'وقت الحضور',
+                'label-clock-out': 'وقت الانصراف',
+                'label-overtime': 'وقت إضافي (بالساعات)',
+                'label-sick-leave': 'إجازة مرضية',
+                'label-vacation': 'إجازة سنوية',
+                'label-is-late': 'هل أنت متأخر؟',
+                'label-notes': 'سبب التأخير أو ملاحظات أخرى',
+                'placeholder-notes': 'ملاحظات اختيارية...',
+                'button-save': 'حفظ الإدخال',
+                'title-history': 'سجل الحضور',
+                'no-entries': 'لا توجد إدخالات. أضف إدخالك الأول أعلاه.',
+                'title-send-notification': 'إرسال إشعار',
+                'text-send-notification': 'اضغط على إدخال واحد أو أكثر لتحديدها، ثم أدخل بريد المدير لإنشاء بريد إلكتروني بهذه الإدخالات.',
+                'label-your-name': 'اسمك',
+                'placeholder-your-name': 'مثال: جنى سالم',
+                'label-manager-email': 'بريد المدير الإلكتروني',
+                'placeholder-manager-email': 'مثال: manager@company.com',
+                'button-generate-email': 'إنشاء بريد إلكتروني',
+                'title-email-history': 'سجل البريد الإلكتروني',
+                'no-email-history': 'لم يتم إرسال أي بريد إلكتروني بعد.',
+                'status-late': 'تأخر في الوصول',
+                'status-sick': 'إجازة مرضية',
+                'status-vacation': 'إجازة سنوية',
+                'status-regular': 'حضور عادي',
+                'email-subject': 'ملخص الحضور - {{count}} يوم',
+                'email-body-salutation': 'مرحباً،',
+                'email-body-intro': 'أكتب إليكم لتقديم ملخص لحضوري الأخير.',
+                'email-body-notes': 'السبب:',
+                'email-body-date': 'التاريخ:',
+                'email-body-status': 'الحالة:',
+                'email-body-clock-in': 'وقت الحضور:',
+                'email-body-clock-out': 'وقت الانصراف:',
+                'email-body-total-hours': 'إجمالي الساعات:',
+                'email-body-overtime': 'وقت إضافي:',
+                'email-body-best': 'مع أطيب التحيات،',
+                'email-body-your-name': '[اسمك]',
+                'message-saved': 'تم حفظ الإدخال بنجاح!',
+                'message-select-entries': 'يرجى تحديد إدخال واحد على الأقل من سجل الحضور.',
+                'message-enter-email': 'يرجى إدخال بريد المدير الإلكتروني.',
+                'message-copied': 'تم نسخ نص البريد الإلكتروني إلى الحافظة! يمكنك الآن لصقه في تطبيق البريد الإلكتروني الخاص بك.',
+                'message-copy-failed': 'فشل في نسخ نص البريد الإلكتروني. يرجى المحاولة مرة أخرى.',
+                'message-selected-count': 'تم تحديد {{count}} إدخالات.',
+                'message-selection-cleared': 'تم إلغاء تحديد الإدخالات.',
+                'message-history-selected': 'تم تحديد البريد الإلكتروني لـ {{recipient}} والاسم لـ {{senderName}}.',
+                'message-date-error': 'يجب أن يكون وقت الانصراف بعد وقت الحضور.',
+                'message-fill-fields': 'يرجى ملء جميع الحقول المطلوبة.',
+                'history-last-used': 'آخر استخدام:',
+                'history-to': 'إلى:',
+                'history-from': 'من:',
+                'history-na': 'غير متاح'
+            }
+        };
+
+        // Function to set the UI language
+        function setLanguage(lang) {
+            currentLang = lang;
+            const elements = document.querySelectorAll('[data-key]');
+            elements.forEach(el => {
+                const key = el.dataset.key;
+                if (translations[lang][key]) {
+                    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+                        if (el.placeholder) {
+                            el.placeholder = translations[lang][key];
+                        }
+                    } else {
+                        el.textContent = translations[lang][key];
+                    }
+                }
+            });
+
+            // Handle title and text content separately
+            document.getElementById('app-title').textContent = translations[lang]['app-title'];
+            
+            // Set direction for Arabic
+            if (lang === 'ar') {
+                document.body.dir = 'rtl';
+                document.body.lang = 'ar';
+            } else {
+                document.body.dir = 'ltr';
+                document.body.lang = 'en';
+            }
+        }
+        
         // Message display helper
         function showMessage(message, isError = false) {
             messageBox.textContent = message;
@@ -183,7 +334,8 @@
             attendanceList.innerHTML = '';
             
             if (entries.length === 0) {
-                attendanceList.innerHTML = '<p class="text-gray-500 text-center">No entries found. Add your first entry above.</p>';
+                const noEntriesMessage = translations[currentLang]['no-entries'];
+                attendanceList.innerHTML = `<p class="text-gray-500 text-center">${noEntriesMessage}</p>`;
                 return;
             }
 
@@ -196,22 +348,22 @@
                 entryElement.dataset.id = entry.id;
                 entryElement.dataset.date = entry.date;
 
-                const totalHours = entry.totalHours || 'N/A';
+                const totalHours = entry.totalHours || translations[currentLang]['history-na'];
                 const formattedDate = new Date(entry.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-                const notesHtml = entry.notes ? `<p class="text-sm text-gray-600 mt-2"><strong>Notes:</strong> ${entry.notes}</p>` : '';
-                const lateHtml = entry.isLate ? `<span class="bg-yellow-200 text-yellow-800 rounded-full px-2 py-1 text-xs font-semibold">Late</span>` : '';
+                const notesHtml = entry.notes ? `<p class="text-sm text-gray-600 mt-2"><strong>${translations[currentLang]['email-body-notes']}</strong> ${entry.notes}</p>` : '';
+                const lateHtml = entry.isLate ? `<span class="bg-yellow-200 text-yellow-800 rounded-full px-2 py-1 text-xs font-semibold">${translations[currentLang]['status-late']}</span>` : '';
 
                 entryElement.innerHTML = `
                     <div class="flex items-center justify-between">
                         <p class="text-lg font-semibold text-indigo-700">${formattedDate}</p>
                         ${lateHtml}
                     </div>
-                    <p class="text-gray-800">Clock In: ${entry.clockIn} | Clock Out: ${entry.clockOut}</p>
-                    <p class="text-gray-800">Total Hours: ${totalHours}</p>
+                    <p class="text-gray-800">${translations[currentLang]['email-body-clock-in']} ${entry.clockIn} | ${translations[currentLang]['email-body-clock-out']} ${entry.clockOut}</p>
+                    <p class="text-gray-800">${translations[currentLang]['email-body-total-hours']} ${totalHours}</p>
                     <div class="text-gray-600 text-sm mt-1">
-                        <span>Overtime: ${entry.overtime} hours</span>
-                        <span class="ml-4">${entry.isSickLeave ? '✅ Sick Leave' : '❌ Sick Leave'}</span>
-                        <span class="ml-4">${entry.isVacation ? '✅ Vacation' : '❌ Vacation'}</span>
+                        <span>${translations[currentLang]['email-body-overtime']} ${entry.overtime} ${translations[currentLang]['label-overtime'].split(' ')[1]}</span>
+                        <span class="ml-4">${entry.isSickLeave ? '✅' : '❌'} ${translations[currentLang]['label-sick-leave']}</span>
+                        <span class="ml-4">${entry.isVacation ? '✅' : '❌'} ${translations[currentLang]['label-vacation']}</span>
                     </div>
                     ${notesHtml}
                 `;
@@ -237,9 +389,10 @@
                     }
                     
                     if (selectedEntries.length > 0) {
-                        showMessage(`${selectedEntries.length} entries selected.`);
+                        const message = translations[currentLang]['message-selected-count'].replace('{{count}}', selectedEntries.length);
+                        showMessage(message);
                     } else {
-                        showMessage('Entry selection cleared.');
+                        showMessage(translations[currentLang]['message-selection-cleared']);
                     }
                 });
             });
@@ -251,7 +404,8 @@
             emailHistoryList.innerHTML = '';
             
             if (history.length === 0) {
-                emailHistoryList.innerHTML = '<p class="text-gray-500 text-center">No emails sent yet.</p>';
+                const noHistoryMessage = translations[currentLang]['no-email-history'];
+                emailHistoryList.innerHTML = `<p class="text-gray-500 text-center">${noHistoryMessage}</p>`;
                 return;
             }
 
@@ -276,10 +430,10 @@
 
                 historyElement.innerHTML = `
                     <div class="flex items-center justify-between text-sm text-gray-600 mb-1">
-                        <span>Last used: ${formattedDate} at ${formattedTime}</span>
+                        <span>${translations[currentLang]['history-last-used']} ${formattedDate} ${translations[currentLang]['ar'] ? 'في' : 'at'} ${formattedTime}</span>
                     </div>
-                    <p class="text-md font-semibold text-gray-800">To: <span class="text-indigo-700">${item.recipient}</span></p>
-                    <p class="text-sm text-gray-600">From: ${item.senderName || 'N/A'}</p>
+                    <p class="text-md font-semibold text-gray-800">${translations[currentLang]['history-to']} <span class="text-indigo-700">${item.recipient}</span></p>
+                    <p class="text-sm text-gray-600">${translations[currentLang]['history-from']} ${item.senderName || translations[currentLang]['history-na']}</p>
                 `;
                 emailHistoryList.appendChild(historyElement);
             });
@@ -289,7 +443,10 @@
                 item.addEventListener('click', () => {
                     emailRecipientInput.value = item.dataset.recipient;
                     yourNameInput.value = item.dataset.senderName;
-                    showMessage(`Email address for ${item.dataset.recipient} and name for ${item.dataset.senderName} has been selected.`);
+                    const message = translations[currentLang]['message-history-selected']
+                        .replace('{{recipient}}', item.dataset.recipient)
+                        .replace('{{senderName}}', item.dataset.senderName);
+                    showMessage(message);
                 });
             });
         }
@@ -309,7 +466,7 @@
 
             // Simple validation
             if (!date || !clockIn || !clockOut) {
-                showMessage('Please fill in all required fields.', true);
+                showMessage(translations[currentLang]['message-fill-fields'], true);
                 return;
             }
 
@@ -320,7 +477,7 @@
             
             // Validate that clock-out is after clock-in
             if (totalMinutes < 0) {
-                showMessage('Clock Out time must be after Clock In time.', true);
+                showMessage(translations[currentLang]['message-date-error'], true);
                 return;
             }
             
@@ -343,7 +500,7 @@
             entries.push(newEntry);
             saveEntries(entries);
             
-            showMessage('Entry saved successfully!');
+            showMessage(translations[currentLang]['message-saved']);
             attendanceForm.reset();
             renderHistory();
         });
@@ -353,41 +510,41 @@
             const recipient = emailRecipientInput.value;
             const yourName = yourNameInput.value.trim();
             if (!recipient) {
-                showMessage('Please enter a manager\'s email.', true);
+                showMessage(translations[currentLang]['message-enter-email'], true);
                 return;
             }
             if (selectedEntries.length === 0) {
-                showMessage('Please select at least one entry from the history list.', true);
+                showMessage(translations[currentLang]['message-select-entries'], true);
                 return;
             }
 
             // Sort entries by date for a chronological email body
             selectedEntries.sort((a, b) => new Date(a.date) - new Date(b.date));
             const newLine = '\n';
-            let body = `Hello,${newLine}I am writing to provide a summary of my recent attendance.${newLine}${newLine}`;
+            let body = `${translations[currentLang]['email-body-salutation']}${newLine}${translations[currentLang]['email-body-intro']}${newLine}${newLine}`;
             
             selectedEntries.forEach(entry => {
-                const formattedDate = new Date(entry.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+                const formattedDate = new Date(entry.date).toLocaleDateString(currentLang === 'ar' ? 'ar-EG' : 'en-US', { year: 'numeric', month: 'long', day: 'numeric' });
                 const status = [];
-                if (entry.isLate) status.push('Late Arrival');
-                if (entry.isSickLeave) status.push('Sick Leave');
-                if (entry.isVacation) status.push('Vacation');
-                if (status.length === 0) status.push('Regular Attendance');
+                if (entry.isLate) status.push(translations[currentLang]['status-late']);
+                if (entry.isSickLeave) status.push(translations[currentLang]['status-sick']);
+                if (entry.isVacation) status.push(translations[currentLang]['status-vacation']);
+                if (status.length === 0) status.push(translations[currentLang]['status-regular']);
 
                 body += `---${newLine}`;
-                body += `Date: ${formattedDate}${newLine}`;
-                body += `Status: ${status.join(', ')}${newLine}`;
-                body += `Clock In: ${entry.clockIn}${newLine}`;
-                body += `Clock Out: ${entry.clockOut}${newLine}`;
-                body += `Total Hours: ${entry.totalHours}${newLine}`;
-                body += `Overtime: ${entry.overtime} hours${newLine}`;
-                body += `Reason: ${entry.notes || 'N/A'}${newLine}`;
+                body += `${translations[currentLang]['email-body-date']} ${formattedDate}${newLine}`;
+                body += `${translations[currentLang]['email-body-status']} ${status.join(', ')}${newLine}`;
+                body += `${translations[currentLang]['email-body-clock-in']} ${entry.clockIn}${newLine}`;
+                body += `${translations[currentLang]['email-body-clock-out']} ${entry.clockOut}${newLine}`;
+                body += `${translations[currentLang]['email-body-total-hours']} ${entry.totalHours}${newLine}`;
+                body += `${translations[currentLang]['email-body-overtime']} ${entry.overtime} ${translations[currentLang]['label-overtime'].split(' ')[1]}${newLine}`;
+                body += `${translations[currentLang]['email-body-notes']} ${entry.notes || translations[currentLang]['history-na']}${newLine}`;
                 body += `${newLine}`;
             });
 
-            body += `Best,${newLine}${yourName || '[Your Name]'}`;
+            body += `${translations[currentLang]['email-body-best']}${newLine}${yourName || translations[currentLang]['email-body-your-name']}`;
             
-            const subject = `Attendance Summary - ${selectedEntries.length} Days`;
+            const subject = translations[currentLang]['email-subject'].replace('{{count}}', selectedEntries.length);
             
             // Mobile detection using user agent
             const isMobile = /Mobi|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
@@ -395,12 +552,12 @@
             if (isMobile) {
                 // For mobile, copy text to clipboard and open email app without the body
                 navigator.clipboard.writeText(body).then(() => {
-                    showMessage('Email text copied to clipboard! You can now paste it into your email app.');
+                    showMessage(translations[currentLang]['message-copied']);
                     const mailtoLink = `mailto:${recipient}?subject=${encodeURIComponent(subject)}`;
                     window.location.href = mailtoLink;
                 }).catch(err => {
                     console.error('Failed to copy text: ', err);
-                    showMessage('Failed to copy email text. Please try again.', true);
+                    showMessage(translations[currentLang]['message-copy-failed'], true);
                 });
             } else {
                 // For desktop, use the full mailto link with the body
@@ -420,8 +577,16 @@
             renderEmailHistory();
         });
 
+        // Event listener for language selector
+        languageSelector.addEventListener('change', (e) => {
+            setLanguage(e.target.value);
+            renderHistory();
+            renderEmailHistory();
+        });
+
         // Initial render on page load
         window.onload = () => {
+            setLanguage('en');
             renderHistory();
             renderEmailHistory();
         };
