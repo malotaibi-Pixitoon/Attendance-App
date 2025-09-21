@@ -112,6 +112,14 @@
         </div>
     </div>
 
+    <!-- Email History Section -->
+    <div class="w-full max-w-4xl mt-8 p-6 bg-white rounded-lg shadow-xl">
+        <h2 class="text-2xl font-bold text-gray-800 mb-4">Email History</h2>
+        <div id="email-history-list" class="space-y-4">
+            <p class="text-gray-500 text-center">No emails sent yet.</p>
+        </div>
+    </div>
+
     <script type="module">
         // UI element references
         const attendanceForm = document.getElementById('attendance-form');
@@ -120,6 +128,7 @@
         const generateEmailBtn = document.getElementById('generate-email-btn');
         const emailRecipientInput = document.getElementById('email-recipient');
         const yourNameInput = document.getElementById('your-name');
+        const emailHistoryList = document.getElementById('email-history-list');
 
         let selectedEntries = [];
 
@@ -147,6 +156,17 @@
         // Save entries to local storage
         function saveEntries(entries) {
             localStorage.setItem('attendanceEntries', JSON.stringify(entries));
+        }
+
+        // Load email history from local storage
+        function loadEmailHistory() {
+            const historyJSON = localStorage.getItem('emailHistory');
+            return historyJSON ? JSON.parse(historyJSON) : [];
+        }
+
+        // Save email history to local storage
+        function saveEmailHistory(history) {
+            localStorage.setItem('emailHistory', JSON.stringify(history));
         }
 
         // Render attendance history
@@ -217,6 +237,37 @@
             });
         }
 
+        // Render email history
+        function renderEmailHistory() {
+            const history = loadEmailHistory();
+            emailHistoryList.innerHTML = '';
+            
+            if (history.length === 0) {
+                emailHistoryList.innerHTML = '<p class="text-gray-500 text-center">No emails sent yet.</p>';
+                return;
+            }
+
+            // Sort by date, newest first
+            history.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            history.forEach(item => {
+                const historyElement = document.createElement('div');
+                historyElement.className = 'bg-gray-50 p-4 rounded-lg shadow-sm border border-gray-200';
+                
+                const formattedDate = new Date(item.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+                const formattedTime = new Date(item.date).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+
+                historyElement.innerHTML = `
+                    <div class="flex items-center justify-between text-sm text-gray-600 mb-1">
+                        <span>Sent on: ${formattedDate} at ${formattedTime}</span>
+                    </div>
+                    <p class="text-md font-semibold text-gray-800">To: <span class="text-indigo-700">${item.recipient}</span></p>
+                    <p class="text-sm text-gray-600">From: ${item.senderName || 'N/A'}</p>
+                `;
+                emailHistoryList.appendChild(historyElement);
+            });
+        }
+
         // Form submission handler
         attendanceForm.addEventListener('submit', (e) => {
             e.preventDefault();
@@ -271,7 +322,7 @@
             renderHistory();
         });
 
-        // Generate Email Functionality (now uses mailto link)
+        // Generate Email Functionality
         generateEmailBtn.addEventListener('click', () => {
             const recipient = emailRecipientInput.value;
             const yourName = yourNameInput.value.trim();
@@ -315,10 +366,24 @@
             const mailtoLink = `mailto:${recipient}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
             window.location.href = mailtoLink;
+
+            // Save the email history after the user has been redirected
+            const emailHistory = loadEmailHistory();
+            const newHistoryEntry = {
+                recipient: recipient,
+                senderName: yourName,
+                date: new Date().toISOString()
+            };
+            emailHistory.push(newHistoryEntry);
+            saveEmailHistory(emailHistory);
+            renderEmailHistory();
         });
 
         // Initial render on page load
-        window.onload = renderHistory;
+        window.onload = () => {
+            renderHistory();
+            renderEmailHistory();
+        };
 
     </script>
 </body>
