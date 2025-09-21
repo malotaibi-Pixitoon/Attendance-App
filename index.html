@@ -8,7 +8,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
-    <!-- Restored meta tag for iOS "Add to Home Screen" functionality -->
     <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ffffff' width='180' height='180' style='background-color:%234f46e5; border-radius:15%;'%3E%3Cpath d='M12 2L1 21h22L12 2zM5.29 19L12 5.39 18.71 19H5.29z'/%3E%3C/svg%3E">
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ffffff' width='180' height='180' style='background-color:%234f46e5; border-radius:15%;'%3E%3Cpath d='M12 2L1 21h22L12 2zM5.29 19L12 5.39 18.71 19H5.29z'/%3E%3C/svg%3E">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -46,7 +45,6 @@
     <div class="w-full max-w-4xl bg-white p-6 rounded-lg shadow-xl">
         <h1 class="text-3xl font-bold text-center text-gray-800 mb-6" id="app-title">Attendance Email Generator</h1>
         
-        <!-- Language Selector -->
         <div class="flex justify-end mb-4">
             <select id="language-selector" class="p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
                 <option value="en">English</option>
@@ -55,25 +53,21 @@
         </div>
         
         <form id="attendance-form" class="space-y-4">
-            <!-- Date Input -->
-            <div>
-                <label for="date" class="block text-gray-700 font-medium mb-1" data-key="label-date">Date</label>
-                <input type="date" id="date" required class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
-            </div>
-
-            <!-- Clock In/Out -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <label for="clock-in" class="block text-gray-700 font-medium mb-1" data-key="label-clock-in">Clock In</label>
-                    <input type="time" id="clock-in" required class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
-                </div>
-                <div>
-                    <label for="clock-out" class="block text-gray-700 font-medium mb-1" data-key="label-clock-out">Clock Out</label>
-                    <input type="time" id="clock-out" required class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+            <div id="normal-fields">
+                <label for="date" class="block text-gray-700 font-medium mb-1" data-key="label-date-optional">Date (Optional)</label>
+                <input type="date" id="date" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                    <div>
+                        <label for="clock-in" class="block text-gray-700 font-medium mb-1" data-key="label-clock-in-optional">Clock In (Optional)</label>
+                        <input type="time" id="clock-in" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                    </div>
+                    <div>
+                        <label for="clock-out" class="block text-gray-700 font-medium mb-1" data-key="label-clock-out-optional">Clock Out (Optional)</label>
+                        <input type="time" id="clock-out" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                    </div>
                 </div>
             </div>
 
-            <!-- Overtime & Leave -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                     <label for="overtime" class="block text-gray-700 font-medium mb-1" data-key="label-overtime">Overtime (hours)</label>
@@ -88,13 +82,25 @@
                     <label for="vacation" class="text-gray-700 font-medium" data-key="label-vacation">Vacation</label>
                 </div>
             </div>
+            
+            <div id="leave-fields" class="hidden">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="leave-from-date" class="block text-gray-700 font-medium mb-1" data-key="label-from-date">From Date</label>
+                        <input type="date" id="leave-from-date" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                    </div>
+                    <div>
+                        <label for="leave-to-date" class="block text-gray-700 font-medium mb-1" data-key="label-to-date">To Date</label>
+                        <input type="date" id="leave-to-date" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                    </div>
+                </div>
+            </div>
 
             <div class="flex items-center gap-2">
                 <input type="checkbox" id="is-late" class="h-5 w-5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
                 <label for="is-late" class="text-gray-700 font-medium" data-key="label-is-late">Running Late?</label>
             </div>
             
-            <!-- Notes / Reason -->
             <div>
                 <label for="notes" class="block text-gray-700 font-medium mb-1" data-key="label-notes">Reason for Late Arrival or Other Notes</label>
                 <textarea id="notes" rows="3" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" data-key="placeholder-notes" placeholder="Optional notes..."></textarea>
@@ -110,18 +116,31 @@
     
     <div class="w-full max-w-4xl mt-8 p-6 bg-white rounded-lg shadow-xl">
         <h2 class="text-2xl font-bold text-gray-800 mb-4" data-key="title-history">Attendance History</h2>
-        <!-- Monthly filter dropdown -->
-        <div class="flex justify-start mb-4">
-            <select id="month-selector" class="p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
-                <!-- Options will be generated by JavaScript -->
-            </select>
+        <div class="flex flex-col md:flex-row justify-between items-center mb-4 gap-4">
+            <div class="w-full md:w-auto">
+                <label for="month-selector" class="block text-gray-700 font-medium mb-1 md:hidden" data-key="month-label">Filter by Month</label>
+                <select id="month-selector" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                    </select>
+            </div>
+            <div class="w-full md:w-auto grid grid-cols-2 gap-4">
+                <div>
+                    <label for="from-date-filter" class="block text-gray-700 font-medium mb-1" data-key="from-date-label">From Date</label>
+                    <input type="date" id="from-date-filter" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+                <div>
+                    <label for="to-date-filter" class="block text-gray-700 font-medium mb-1" data-key="to-date-label">To Date</label>
+                    <input type="date" id="to-date-filter" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+            </div>
+            <button id="export-excel-btn" type="button" class="w-full md:w-auto bg-green-600 text-white font-bold py-2 px-4 rounded-md hover:bg-green-700 transition-colors duration-200" data-key="button-export">
+                Export to Excel
+            </button>
         </div>
         <div id="attendance-list" class="space-y-4">
             <p class="text-gray-500 text-center" data-key="no-entries">No entries found. Add your first entry above.</p>
         </div>
     </div>
 
-    <!-- Email Notification Section -->
     <div class="w-full max-w-4xl mt-8 p-6 bg-white rounded-lg shadow-xl">
         <h2 class="text-2xl font-bold text-gray-800 mb-4" data-key="title-send-notification">Send Notification</h2>
         <p class="text-gray-600 mb-4" data-key="text-send-notification">Click one or more entries above to select them, then enter a manager's email to generate an email for those entries.</p>
@@ -140,7 +159,6 @@
         </div>
     </div>
 
-    <!-- Email History Section -->
     <div class="w-full max-w-4xl mt-8 p-6 bg-white rounded-lg shadow-xl">
         <h2 class="text-2xl font-bold text-gray-800 mb-4" data-key="title-email-history">Email History</h2>
         <div id="email-history-list" class="space-y-4">
@@ -159,6 +177,15 @@
         const emailHistoryList = document.getElementById('email-history-list');
         const languageSelector = document.getElementById('language-selector');
         const monthSelector = document.getElementById('month-selector');
+        const fromDateFilter = document.getElementById('from-date-filter');
+        const toDateFilter = document.getElementById('to-date-filter');
+        const exportExcelBtn = document.getElementById('export-excel-btn');
+        const sickLeaveCheckbox = document.getElementById('sick-leave');
+        const vacationCheckbox = document.getElementById('vacation');
+        const normalFields = document.getElementById('normal-fields');
+        const leaveFields = document.getElementById('leave-fields');
+        const leaveFromDate = document.getElementById('leave-from-date');
+        const leaveToDate = document.getElementById('leave-to-date');
 
         let selectedEntries = [];
         let currentLang = 'en';
@@ -167,8 +194,11 @@
             'en': {
                 'app-title': 'Attendance Email Generator',
                 'label-date': 'Date',
+                'label-date-optional': 'Date (Optional)',
                 'label-clock-in': 'Clock In',
                 'label-clock-out': 'Clock Out',
+                'label-clock-in-optional': 'Clock In (Optional)',
+                'label-clock-out-optional': 'Clock Out (Optional)',
                 'label-overtime': 'Overtime (hours)',
                 'label-sick-leave': 'Sick Leave',
                 'label-vacation': 'Vacation',
@@ -191,7 +221,7 @@
                 'status-sick': 'Sick Leave',
                 'status-vacation': 'Vacation',
                 'status-regular': 'Regular Attendance',
-                'email-subject': 'Attendance Summary - {{count}} Days',
+                'email-subject': 'Attendance Summary',
                 'email-body-salutation': 'Hello,',
                 'email-body-intro': 'I am writing to provide a summary of my recent attendance.',
                 'email-body-notes': 'Reason: ',
@@ -219,13 +249,27 @@
                 'history-from': 'From:',
                 'history-na': 'N/A',
                 'month-label': 'Select Month',
-                'months': ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+                'months': ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+                'button-export': 'Export to Excel',
+                'from-date-label': 'From Date',
+                'to-date-label': 'To Date',
+                'message-date-range-error': 'The "From Date" must be before the "To Date".',
+                'message-fill-one': 'Please fill in Clock In and Clock Out, or select Sick Leave or Vacation.',
+                'label-from-date': 'From Date',
+                'label-to-date': 'To Date',
+                'date-range': '{{fromDate}} to {{toDate}}',
+                'button-delete': 'Delete',
+                'message-delete-confirm': 'Are you sure you want to delete this entry?',
+                'message-entry-deleted': 'Entry deleted successfully!'
             },
             'ar': {
                 'app-title': 'مولد بريد الحضور الإلكتروني',
                 'label-date': 'التاريخ',
+                'label-date-optional': 'التاريخ (اختياري)',
                 'label-clock-in': 'وقت الحضور',
                 'label-clock-out': 'وقت الانصراف',
+                'label-clock-in-optional': 'وقت الحضور (اختياري)',
+                'label-clock-out-optional': 'وقت الانصراف (اختياري)',
                 'label-overtime': 'وقت إضافي (بالساعات)',
                 'label-sick-leave': 'إجازة مرضية',
                 'label-vacation': 'إجازة سنوية',
@@ -248,7 +292,7 @@
                 'status-sick': 'إجازة مرضية',
                 'status-vacation': 'إجازة سنوية',
                 'status-regular': 'حضور عادي',
-                'email-subject': 'ملخص الحضور - {{count}} يوم',
+                'email-subject': 'ملخص الحضور',
                 'email-body-salutation': 'مرحباً،',
                 'email-body-intro': 'أكتب إليكم لتقديم ملخص لحضوري الأخير.',
                 'email-body-notes': 'السبب:',
@@ -276,7 +320,18 @@
                 'history-from': 'من:',
                 'history-na': 'غير متاح',
                 'month-label': 'تحديد الشهر',
-                'months': ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر']
+                'months': ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'],
+                'button-export': 'تصدير إلى إكسل',
+                'from-date-label': 'من تاريخ',
+                'to-date-label': 'إلى تاريخ',
+                'message-date-range-error': 'يجب أن يكون "تاريخ البدء" قبل "تاريخ الانتهاء".',
+                'message-fill-one': 'يرجى إدخال وقت الحضور والانصراف، أو تحديد إجازة مرضية أو إجازة سنوية.',
+                'label-from-date': 'من تاريخ',
+                'label-to-date': 'إلى تاريخ',
+                'date-range': 'من {{fromDate}} إلى {{toDate}}',
+                'button-delete': 'حذف',
+                'message-delete-confirm': 'هل أنت متأكد أنك تريد حذف هذا الإدخال؟',
+                'message-entry-deleted': 'تم حذف الإدخال بنجاح!'
             }
         };
 
@@ -372,20 +427,48 @@
         // Render attendance history
         function renderHistory() {
             const entries = loadEntries();
-            const selectedMonth = monthSelector.value;
             attendanceList.innerHTML = '';
-            
+
             if (entries.length === 0) {
                 const noEntriesMessage = translations[currentLang]['no-entries'];
                 attendanceList.innerHTML = `<p class="text-gray-500 text-center">${noEntriesMessage}</p>`;
                 return;
             }
-            
-            // Filter entries by the selected month
-            const filteredEntries = entries.filter(entry => entry.date.startsWith(selectedMonth));
+
+            let filteredEntries = entries;
+
+            const fromDateVal = fromDateFilter.value;
+            const toDateVal = toDateFilter.value;
+            const selectedMonth = monthSelector.value;
+
+            // Prioritize date range filter
+            if (fromDateVal && toDateVal) {
+                 const fromDate = new Date(fromDateVal);
+                 const toDate = new Date(toDateVal);
+                 filteredEntries = entries.filter(entry => {
+                    if (entry.fromDate && entry.toDate) { // Check date range for leave entries
+                        const entryFromDate = new Date(entry.fromDate);
+                        const entryToDate = new Date(entry.toDate);
+                        return (entryFromDate >= fromDate && entryFromDate <= toDate) || (entryToDate >= fromDate && entryToDate <= toDate);
+                    } else if (entry.date) { // Check single date for regular entries
+                        const entryDate = new Date(entry.date);
+                        return entryDate >= fromDate && entryDate <= toDate;
+                    }
+                    return false;
+                 });
+            } else {
+                // Fallback to month filter if date range is empty
+                filteredEntries = entries.filter(entry => {
+                    const entryDate = entry.date || entry.fromDate;
+                    if (entryDate) {
+                       return entryDate.startsWith(selectedMonth);
+                    }
+                    return false;
+                });
+            }
 
             // Sort by date, newest first
-            filteredEntries.sort((a, b) => new Date(b.date) - new Date(a.date));
+            filteredEntries.sort((a, b) => new Date(b.date || b.toDate) - new Date(a.date || a.toDate));
 
             if (filteredEntries.length === 0) {
                 const noEntriesMessage = translations[currentLang]['no-entries'];
@@ -397,20 +480,40 @@
                 const entryElement = document.createElement('div');
                 entryElement.className = 'entry-item bg-gray-50 p-4 rounded-lg shadow-sm border border-gray-200';
                 entryElement.dataset.id = entry.id;
-                entryElement.dataset.date = entry.date;
 
                 const totalHours = entry.totalHours || translations[currentLang]['history-na'];
-                const formattedDate = new Date(entry.date).toLocaleDateString(currentLang === 'ar' ? 'ar-EG' : 'en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+                
+                let dateDisplay;
+                if (entry.fromDate && entry.toDate) {
+                    const fromDate = new Date(entry.fromDate).toLocaleDateString(currentLang === 'ar' ? 'ar-EG' : 'en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+                    const toDate = new Date(entry.toDate).toLocaleDateString(currentLang === 'ar' ? 'ar-EG' : 'en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+                    dateDisplay = translations[currentLang]['date-range'].replace('{{fromDate}}', fromDate).replace('{{toDate}}', toDate);
+                } else {
+                    dateDisplay = new Date(entry.date).toLocaleDateString(currentLang === 'ar' ? 'ar-EG' : 'en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+                }
+
                 const notesHtml = entry.notes ? `<p class="text-sm text-gray-600 mt-2"><strong>${translations[currentLang]['email-body-notes']}</strong> ${entry.notes}</p>` : '';
                 const lateHtml = entry.isLate ? `<span class="bg-yellow-200 text-yellow-800 rounded-full px-2 py-1 text-xs font-semibold">${translations[currentLang]['status-late']}</span>` : '';
 
+                let timeDisplay = '';
+                if (!entry.isSickLeave && !entry.isVacation) {
+                    timeDisplay = `<p class="text-gray-800">${translations[currentLang]['email-body-clock-in']} ${entry.clockIn || translations[currentLang]['history-na']} | ${translations[currentLang]['email-body-clock-out']} ${entry.clockOut || translations[currentLang]['history-na']}</p>
+                                   <p class="text-gray-800">${translations[currentLang]['email-body-total-hours']} ${totalHours}</p>`;
+                }
+
                 entryElement.innerHTML = `
                     <div class="flex items-center justify-between">
-                        <p class="text-lg font-semibold text-indigo-700">${formattedDate}</p>
-                        ${lateHtml}
+                        <p class="text-lg font-semibold text-indigo-700">${dateDisplay}</p>
+                        <div class="flex items-center gap-2">
+                          ${lateHtml}
+                          <button class="delete-btn text-gray-400 hover:text-red-500 transition-colors duration-200" data-id="${entry.id}">
+                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm6 0a1 1 0 012 0v6a1 1 0 11-2 0V8z" clip-rule="evenodd" />
+                              </svg>
+                          </button>
+                        </div>
                     </div>
-                    <p class="text-gray-800">${translations[currentLang]['email-body-clock-in']} ${entry.clockIn} | ${translations[currentLang]['email-body-clock-out']} ${entry.clockOut}</p>
-                    <p class="text-gray-800">${translations[currentLang]['email-body-total-hours']} ${totalHours}</p>
+                    ${timeDisplay}
                     <div class="text-gray-600 text-sm mt-1">
                         <span>${translations[currentLang]['email-body-overtime']} ${entry.overtime} ${translations[currentLang]['label-overtime'].split(' ')[1]}</span>
                         <span class="ml-4">${entry.isSickLeave ? '✅' : '❌'} ${translations[currentLang]['label-sick-leave']}</span>
@@ -423,27 +526,45 @@
 
             // Add click listener for selecting multiple entries
             document.querySelectorAll('.entry-item').forEach(item => {
-                item.addEventListener('click', () => {
-                    const entryId = parseInt(item.dataset.id);
-                    const isSelected = item.classList.contains('selected');
-                    
-                    if (isSelected) {
-                        item.classList.remove('selected');
-                        selectedEntries = selectedEntries.filter(entry => entry.id !== entryId);
-                    } else {
-                        item.classList.add('selected');
-                        const entries = loadEntries();
-                        const entryToAdd = entries.find(entry => entry.id === entryId);
-                        if (entryToAdd) {
-                             selectedEntries.push(entryToAdd);
+                const selectArea = item.querySelector('.text-lg'); // Only select when clicking on the date
+                if (selectArea) {
+                    selectArea.addEventListener('click', () => {
+                        const entryId = parseInt(item.dataset.id);
+                        const isSelected = item.classList.contains('selected');
+                        
+                        if (isSelected) {
+                            item.classList.remove('selected');
+                            selectedEntries = selectedEntries.filter(entry => entry.id !== entryId);
+                        } else {
+                            item.classList.add('selected');
+                            const entries = loadEntries();
+                            const entryToAdd = entries.find(entry => entry.id === entryId);
+                            if (entryToAdd) {
+                                selectedEntries.push(entryToAdd);
+                            }
                         }
-                    }
-                    
-                    if (selectedEntries.length > 0) {
-                        const message = translations[currentLang]['message-selected-count'].replace('{{count}}', selectedEntries.length);
-                        showMessage(message);
-                    } else {
-                        showMessage(translations[currentLang]['message-selection-cleared']);
+                        
+                        if (selectedEntries.length > 0) {
+                            const message = translations[currentLang]['message-selected-count'].replace('{{count}}', selectedEntries.length);
+                            showMessage(message);
+                        } else {
+                            showMessage(translations[currentLang]['message-selection-cleared']);
+                        }
+                    });
+                }
+            });
+
+            // Add click listener for delete buttons
+            document.querySelectorAll('.delete-btn').forEach(button => {
+                button.addEventListener('click', (event) => {
+                    event.stopPropagation(); // Prevents the parent 'entry-item' click listener from firing
+                    const entryId = parseInt(button.dataset.id);
+                    if (window.confirm(translations[currentLang]['message-delete-confirm'])) {
+                        let entries = loadEntries();
+                        entries = entries.filter(entry => entry.id !== entryId);
+                        saveEntries(entries);
+                        showMessage(translations[currentLang]['message-entry-deleted']);
+                        renderHistory();
                     }
                 });
             });
@@ -502,53 +623,96 @@
             });
         }
         
+        // Helper function to calculate number of days between two dates
+        const getDayCount = (startDate, endDate) => {
+            const oneDay = 1000 * 60 * 60 * 24;
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+            const diffDays = Math.round(Math.abs((end - start) / oneDay));
+            return diffDays + 1;
+        };
+
         // Form submission handler
         attendanceForm.addEventListener('submit', (e) => {
             e.preventDefault();
 
-            const date = document.getElementById('date').value;
-            const clockIn = document.getElementById('clock-in').value;
-            const clockOut = document.getElementById('clock-out').value;
-            const overtime = parseFloat(document.getElementById('overtime').value) || 0;
-            const isSickLeave = document.getElementById('sick-leave').checked;
-            const isVacation = document.getElementById('vacation').checked;
+            const isSickLeave = sickLeaveCheckbox.checked;
+            const isVacation = vacationCheckbox.checked;
             const isLate = document.getElementById('is-late').checked;
             const notes = document.getElementById('notes').value;
-
-            // Simple validation
-            if (!date || !clockIn || !clockOut) {
-                showMessage(translations[currentLang]['message-fill-fields'], true);
-                return;
-            }
-
-            // Calculate total hours
-            const [inHour, inMin] = clockIn.split(':').map(Number);
-            const [outHour, outMin] = clockOut.split(':').map(Number);
-            const totalMinutes = (outHour * 60 + outMin) - (inHour * 60 + inMin);
-            
-            // Validate that clock-out is after clock-in
-            if (totalMinutes < 0) {
-                showMessage(translations[currentLang]['message-date-error'], true);
-                return;
-            }
-            
-            const totalHours = (totalMinutes / 60).toFixed(2);
-            
-            const newEntry = {
-                id: Date.now(), // Unique ID for each entry
-                date: date,
-                clockIn: clockIn,
-                clockOut: clockOut,
-                totalHours: totalHours,
-                overtime: overtime,
-                isSickLeave: isSickLeave,
-                isVacation: isVacation,
-                isLate: isLate,
-                notes: notes,
-            };
-            
+            const overtime = parseFloat(document.getElementById('overtime').value) || 0;
             const entries = loadEntries();
-            entries.push(newEntry);
+
+            // Handle multi-day leave
+            if (isSickLeave || isVacation) {
+                const fromDate = leaveFromDate.value;
+                const toDate = leaveToDate.value;
+
+                if (!fromDate || !toDate) {
+                    showMessage(translations[currentLang]['message-fill-fields'], true);
+                    return;
+                }
+
+                if (new Date(fromDate) > new Date(toDate)) {
+                    showMessage(translations[currentLang]['message-date-range-error'], true);
+                    return;
+                }
+                
+                const newEntry = {
+                    id: Date.now(), // Unique ID for the single entry
+                    fromDate: fromDate,
+                    toDate: toDate,
+                    clockIn: null,
+                    clockOut: null,
+                    totalHours: getDayCount(fromDate, toDate) * 8, // Assuming 8-hour workdays for leave
+                    overtime: 0,
+                    isSickLeave: isSickLeave,
+                    isVacation: isVacation,
+                    isLate: false, // Late arrival is not applicable for leave
+                    notes: notes,
+                };
+                entries.push(newEntry);
+
+            } else { // Handle single-day attendance
+                const date = document.getElementById('date').value || new Date().toISOString().slice(0, 10);
+                const clockIn = document.getElementById('clock-in').value;
+                const clockOut = document.getElementById('clock-out').value;
+                
+                if ((!clockIn || !clockOut) && !isSickLeave && !isVacation) {
+                    showMessage(translations[currentLang]['message-fill-one'], true);
+                    return;
+                }
+
+                // Calculate total hours
+                let totalHours = 0;
+                if (clockIn && clockOut) {
+                    const [inHour, inMin] = clockIn.split(':').map(Number);
+                    const [outHour, outMin] = clockOut.split(':').map(Number);
+                    const totalMinutes = (outHour * 60 + outMin) - (inHour * 60 + inMin);
+                    
+                    // Validate that clock-out is after clock-in
+                    if (totalMinutes < 0) {
+                        showMessage(translations[currentLang]['message-date-error'], true);
+                        return;
+                    }
+                    totalHours = (totalMinutes / 60).toFixed(2);
+                }
+                
+                const newEntry = {
+                    id: Date.now(), // Unique ID for each entry
+                    date: date,
+                    clockIn: clockIn,
+                    clockOut: clockOut,
+                    totalHours: totalHours,
+                    overtime: overtime,
+                    isSickLeave: isSickLeave,
+                    isVacation: isVacation,
+                    isLate: isLate,
+                    notes: notes,
+                };
+                entries.push(newEntry);
+            }
+            
             saveEntries(entries);
             
             showMessage(translations[currentLang]['message-saved']);
@@ -570,24 +734,36 @@
             }
 
             // Sort entries by date for a chronological email body
-            selectedEntries.sort((a, b) => new Date(a.date) - new Date(b.date));
+            selectedEntries.sort((a, b) => new Date(a.date || a.fromDate) - new Date(b.date || b.fromDate));
             const newLine = '\n';
             let body = `${translations[currentLang]['email-body-salutation']}${newLine}${translations[currentLang]['email-body-intro']}${newLine}${newLine}`;
             
             selectedEntries.forEach(entry => {
-                const formattedDate = new Date(entry.date).toLocaleDateString(currentLang === 'ar' ? 'ar-EG' : 'en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+                let dateDisplay;
+                if (entry.fromDate && entry.toDate) {
+                    const fromDate = new Date(entry.fromDate).toLocaleDateString(currentLang === 'ar' ? 'ar-EG' : 'en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+                    const toDate = new Date(entry.toDate).toLocaleDateString(currentLang === 'ar' ? 'ar-EG' : 'en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+                    dateDisplay = translations[currentLang]['date-range'].replace('{{fromDate}}', fromDate).replace('{{toDate}}', toDate);
+                } else {
+                    dateDisplay = new Date(entry.date).toLocaleDateString(currentLang === 'ar' ? 'ar-EG' : 'en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+                }
+
                 const status = [];
                 if (entry.isLate) status.push(translations[currentLang]['status-late']);
                 if (entry.isSickLeave) status.push(translations[currentLang]['status-sick']);
                 if (entry.isVacation) status.push(translations[currentLang]['status-vacation']);
-                if (status.length === 0) status.push(translations[currentLang]['status-regular']);
+                if (status.length === 0 && entry.clockIn) status.push(translations[currentLang]['status-regular']);
 
                 body += `---${newLine}`;
-                body += `${translations[currentLang]['email-body-date']} ${formattedDate}${newLine}`;
+                body += `${translations[currentLang]['email-body-date']} ${dateDisplay}${newLine}`;
                 body += `${translations[currentLang]['email-body-status']} ${status.join(', ')}${newLine}`;
-                body += `${translations[currentLang]['email-body-clock-in']} ${entry.clockIn}${newLine}`;
-                body += `${translations[currentLang]['email-body-clock-out']} ${entry.clockOut}${newLine}`;
-                body += `${translations[currentLang]['email-body-total-hours']} ${entry.totalHours}${newLine}`;
+                if (entry.isSickLeave || entry.isVacation) {
+                    body += `${translations[currentLang]['email-body-total-hours']} ${entry.totalHours}${newLine}`;
+                } else {
+                    body += `${translations[currentLang]['email-body-clock-in']} ${entry.clockIn || translations[currentLang]['history-na']}${newLine}`;
+                    body += `${translations[currentLang]['email-body-clock-out']} ${entry.clockOut || translations[currentLang]['history-na']}${newLine}`;
+                    body += `${translations[currentLang]['email-body-total-hours']} ${entry.totalHours}${newLine}`;
+                }
                 body += `${translations[currentLang]['email-body-overtime']} ${entry.overtime} ${translations[currentLang]['label-overtime'].split(' ')[1]}${newLine}`;
                 body += `${translations[currentLang]['email-body-notes']} ${entry.notes || translations[currentLang]['history-na']}${newLine}`;
                 body += `${newLine}`;
@@ -638,6 +814,98 @@
             renderEmailHistory();
         });
 
+        // New functionality for exporting to Excel (CSV)
+        exportExcelBtn.addEventListener('click', () => {
+            const entries = loadEntries();
+            
+            let filteredEntries;
+            const fromDateVal = fromDateFilter.value;
+            const toDateVal = toDateFilter.value;
+
+            if (fromDateVal && toDateVal) {
+                 const fromDate = new Date(fromDateVal);
+                 const toDate = new Date(toDateVal);
+                 filteredEntries = entries.filter(entry => {
+                    if (entry.fromDate && entry.toDate) { // Check date range for leave entries
+                        const entryFromDate = new Date(entry.fromDate);
+                        const entryToDate = new Date(entry.toDate);
+                        return (entryFromDate >= fromDate && entryFromDate <= toDate) || (entryToDate >= fromDate && entryToDate <= toDate);
+                    } else if (entry.date) { // Check single date for regular entries
+                        const entryDate = new Date(entry.date);
+                        return entryDate >= fromDate && entryDate <= toDate;
+                    }
+                    return false;
+                 });
+                 if (fromDate > toDate) {
+                     showMessage(translations[currentLang]['message-date-range-error'], true);
+                     return;
+                 }
+            } else {
+                const selectedMonth = monthSelector.value;
+                filteredEntries = entries.filter(entry => {
+                    const entryDate = entry.date || entry.fromDate;
+                    return entryDate && entryDate.startsWith(selectedMonth);
+                });
+            }
+            
+            if (filteredEntries.length === 0) {
+                showMessage('No entries to export for the selected period.', true);
+                return;
+            }
+
+            // Define CSV headers based on the English translations
+            const headers = [
+                translations['en']['label-date'],
+                translations['en']['from-date-label'],
+                translations['en']['to-date-label'],
+                translations['en']['label-clock-in'],
+                translations['en']['label-clock-out'],
+                translations['en']['email-body-total-hours'].replace(':', ''),
+                translations['en']['label-overtime'].replace('(hours)', '').trim(),
+                translations['en']['label-sick-leave'],
+                translations['en']['label-vacation'],
+                translations['en']['label-is-late'].replace('?', ''),
+                translations['en']['label-notes']
+            ];
+            
+            const csvRows = [headers.join(',')]; // Add header row
+
+            // Add data rows
+            filteredEntries.forEach(entry => {
+                const row = [
+                    `"${entry.date || translations['en']['history-na']}"`,
+                    `"${entry.fromDate || translations['en']['history-na']}"`,
+                    `"${entry.toDate || translations['en']['history-na']}"`,
+                    `"${entry.clockIn || translations['en']['history-na']}"`,
+                    `"${entry.clockOut || translations['en']['history-na']}"`,
+                    `"${entry.totalHours}"`,
+                    `"${entry.overtime}"`,
+                    `"${entry.isSickLeave ? 'Yes' : 'No'}"`,
+                    `"${entry.isVacation ? 'Yes' : 'No'}"`,
+                    `"${entry.isLate ? 'Yes' : 'No'}"`,
+                    `"${entry.notes.replace(/"/g, '""')}"` // Handle notes with commas or quotes
+                ];
+                csvRows.push(row.join(','));
+            });
+
+            const csvString = csvRows.join('\n');
+            const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            
+            const monthName = translations[currentLang]['months'][new Date(monthSelector.value).getMonth()];
+            const fileName = `Attendance_Report_${monthName}_${new Date(monthSelector.value).getFullYear()}.csv`;
+            
+            link.setAttribute('href', url);
+            link.setAttribute('download', fileName);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            showMessage(`Exported attendance data for the selected period!`);
+        });
+
         // Event listener for language selector
         languageSelector.addEventListener('change', (e) => {
             setLanguage(e.target.value);
@@ -649,9 +917,36 @@
         // Event listener for month selector
         monthSelector.addEventListener('change', () => {
             selectedEntries = []; // Clear selection when month changes
+            fromDateFilter.value = '';
+            toDateFilter.value = '';
             document.querySelectorAll('.entry-item').forEach(item => item.classList.remove('selected'));
             renderHistory();
         });
+
+        // Event listener for date range filter
+        fromDateFilter.addEventListener('change', () => {
+            monthSelector.value = ''; // Clear month selector when date range is used
+            renderHistory();
+        });
+        toDateFilter.addEventListener('change', () => {
+            monthSelector.value = ''; // Clear month selector when date range is used
+            renderHistory();
+        });
+
+        // New event listeners to toggle date fields
+        const toggleDateFields = () => {
+            const isLeave = sickLeaveCheckbox.checked || vacationCheckbox.checked;
+            if (isLeave) {
+                normalFields.classList.add('hidden');
+                leaveFields.classList.remove('hidden');
+            } else {
+                normalFields.classList.remove('hidden');
+                leaveFields.classList.add('hidden');
+            }
+        };
+
+        sickLeaveCheckbox.addEventListener('change', toggleDateFields);
+        vacationCheckbox.addEventListener('change', toggleDateFields);
 
         // Initial render on page load
         function init() {
@@ -662,6 +957,7 @@
             populateMonthSelector();
             renderHistory();
             renderEmailHistory();
+            toggleDateFields(); // Set initial visibility of date fields
         }
 
         window.onload = init;
