@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Attendance Email Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+        .entry-item {
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .entry-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .entry-item.selected {
+            border-color: #4f46e5;
+            background-color: #eef2ff;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8 flex flex-col items-center">
+
+    <div class="w-full max-w-4xl bg-white p-6 rounded-lg shadow-xl">
+        <h1 class="text-3xl font-bold text-center text-gray-800 mb-6">Attendance Email Generator</h1>
+        
+        <form id="attendance-form" class="space-y-4">
+            <!-- Date Input -->
+            <div>
+                <label for="date" class="block text-gray-700 font-medium mb-1">Date</label>
+                <input type="date" id="date" required class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+            </div>
+
+            <!-- Clock In/Out -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label for="clock-in" class="block text-gray-700 font-medium mb-1">Clock In</label>
+                    <input type="time" id="clock-in" required class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+                <div>
+                    <label for="clock-out" class="block text-gray-700 font-medium mb-1">Clock Out</label>
+                    <input type="time" id="clock-out" required class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+            </div>
+
+            <!-- Overtime & Leave -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <label for="overtime" class="block text-gray-700 font-medium mb-1">Overtime (hours)</label>
+                    <input type="number" id="overtime" value="0" min="0" step="0.5" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+                <div class="flex items-center gap-2 mt-7">
+                    <input type="checkbox" id="sick-leave" class="h-5 w-5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                    <label for="sick-leave" class="text-gray-700 font-medium">Sick Leave</label>
+                </div>
+                <div class="flex items-center gap-2 mt-7">
+                    <input type="checkbox" id="vacation" class="h-5 w-5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                    <label for="vacation" class="text-gray-700 font-medium">Vacation</label>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-2">
+                <input type="checkbox" id="is-late" class="h-5 w-5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                <label for="is-late" class="text-gray-700 font-medium">Running Late?</label>
+            </div>
+            
+            <!-- Notes / Reason -->
+            <div>
+                <label for="notes" class="block text-gray-700 font-medium mb-1">Reason for Late Arrival or Other Notes</label>
+                <textarea id="notes" rows="3" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"></textarea>
+            </div>
+            
+            <button id="submit-btn" type="submit" class="w-full bg-indigo-600 text-white font-bold py-3 px-4 rounded-md hover:bg-indigo-700 transition-colors duration-200">
+                Save Entry
+            </button>
+        </form>
+
+        <div id="message-box" class="mt-4 p-3 rounded-md text-sm text-center hidden"></div>
+    </div>
+    
+    <div class="w-full max-w-4xl mt-8 p-6 bg-white rounded-lg shadow-xl">
+        <h2 class="text-2xl font-bold text-gray-800 mb-4">Attendance History</h2>
+        <div id="attendance-list" class="space-y-4">
+            <p class="text-gray-500 text-center">No entries found. Add your first entry above.</p>
+        </div>
+    </div>
+
+    <!-- Email Notification Section -->
+    <div class="w-full max-w-4xl mt-8 p-6 bg-white rounded-lg shadow-xl">
+        <h2 class="text-2xl font-bold text-gray-800 mb-4">Send Notification</h2>
+        <p class="text-gray-600 mb-4">Click one or more entries above to select them, then enter a manager's email to generate an email for those entries.</p>
+        <div class="space-y-4">
+            <div>
+                <label for="your-name" class="block text-gray-700 font-medium mb-1">Your Name</label>
+                <input type="text" id="your-name" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="e.g., Jane Doe">
+            </div>
+            <div>
+                <label for="email-recipient" class="block text-gray-700 font-medium mb-1">Manager's Email</label>
+                <input type="email" id="email-recipient" required class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="e.g., manager@company.com">
+            </div>
+            <button id="generate-email-btn" type="button" class="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-md hover:bg-blue-700 transition-colors duration-200">
+                Generate Email
+            </button>
+        </div>
+    </div>
+
+    <script type="module">
+        // UI element references
+        const attendanceForm = document.getElementById('attendance-form');
+        const attendanceList = document.getElementById('attendance-list');
+        const messageBox = document.getElementById('message-box');
+        const generateEmailBtn = document.getElementById('generate-email-btn');
+        const emailRecipientInput = document.getElementById('email-recipient');
+        const yourNameInput = document.getElementById('your-name');
+
+        let selectedEntries = [];
+
+        // Message display helper
+        function showMessage(message, isError = false) {
+            messageBox.textContent = message;
+            messageBox.classList.remove('hidden', 'bg-red-100', 'text-red-700', 'bg-green-100', 'text-green-700');
+            if (isError) {
+                messageBox.classList.add('bg-red-100', 'text-red-700');
+            } else {
+                messageBox.classList.add('bg-green-100', 'text-green-700');
+            }
+            // Hide the message after 5 seconds
+            setTimeout(() => {
+                messageBox.classList.add('hidden');
+            }, 5000);
+        }
+
+        // Load entries from local storage
+        function loadEntries() {
+            const entriesJSON = localStorage.getItem('attendanceEntries');
+            return entriesJSON ? JSON.parse(entriesJSON) : [];
+        }
+
+        // Save entries to local storage
+        function saveEntries(entries) {
+            localStorage.setItem('attendanceEntries', JSON.stringify(entries));
+        }
+
+        // Render attendance history
+        function renderHistory() {
+            const entries = loadEntries();
+            attendanceList.innerHTML = '';
+            
+            if (entries.length === 0) {
+                attendanceList.innerHTML = '<p class="text-gray-500 text-center">No entries found. Add your first entry above.</p>';
+                return;
+            }
+
+            // Sort by date, newest first
+            entries.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            entries.forEach(entry => {
+                const entryElement = document.createElement('div');
+                entryElement.className = 'entry-item bg-gray-50 p-4 rounded-lg shadow-sm border border-gray-200';
+                entryElement.dataset.id = entry.id;
+                entryElement.dataset.date = entry.date;
+
+                const totalHours = entry.totalHours || 'N/A';
+                const formattedDate = new Date(entry.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+                const notesHtml = entry.notes ? `<p class="text-sm text-gray-600 mt-2"><strong>Notes:</strong> ${entry.notes}</p>` : '';
+                const lateHtml = entry.isLate ? `<span class="bg-yellow-200 text-yellow-800 rounded-full px-2 py-1 text-xs font-semibold">Late</span>` : '';
+
+                entryElement.innerHTML = `
+                    <div class="flex items-center justify-between">
+                        <p class="text-lg font-semibold text-indigo-700">${formattedDate}</p>
+                        ${lateHtml}
+                    </div>
+                    <p class="text-gray-800">Clock In: ${entry.clockIn} | Clock Out: ${entry.clockOut}</p>
+                    <p class="text-gray-800">Total Hours: ${totalHours}</p>
+                    <div class="text-gray-600 text-sm mt-1">
+                        <span>Overtime: ${entry.overtime} hours</span>
+                        <span class="ml-4">${entry.isSickLeave ? '✅ Sick Leave' : '❌ Sick Leave'}</span>
+                        <span class="ml-4">${entry.isVacation ? '✅ Vacation' : '❌ Vacation'}</span>
+                    </div>
+                    ${notesHtml}
+                `;
+                attendanceList.appendChild(entryElement);
+            });
+
+            // Add click listener for selecting multiple entries
+            document.querySelectorAll('.entry-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    const entryId = parseInt(item.dataset.id);
+                    const isSelected = item.classList.contains('selected');
+                    
+                    if (isSelected) {
+                        item.classList.remove('selected');
+                        selectedEntries = selectedEntries.filter(entry => entry.id !== entryId);
+                    } else {
+                        item.classList.add('selected');
+                        const entries = loadEntries();
+                        const entryToAdd = entries.find(entry => entry.id === entryId);
+                        if (entryToAdd) {
+                             selectedEntries.push(entryToAdd);
+                        }
+                    }
+                    
+                    if (selectedEntries.length > 0) {
+                        showMessage(`${selectedEntries.length} entries selected.`);
+                    } else {
+                        showMessage('Entry selection cleared.');
+                    }
+                });
+            });
+        }
+
+        // Form submission handler
+        attendanceForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const date = document.getElementById('date').value;
+            const clockIn = document.getElementById('clock-in').value;
+            const clockOut = document.getElementById('clock-out').value;
+            const overtime = parseFloat(document.getElementById('overtime').value) || 0;
+            const isSickLeave = document.getElementById('sick-leave').checked;
+            const isVacation = document.getElementById('vacation').checked;
+            const isLate = document.getElementById('is-late').checked;
+            const notes = document.getElementById('notes').value;
+
+            // Simple validation
+            if (!date || !clockIn || !clockOut) {
+                showMessage('Please fill in all required fields.', true);
+                return;
+            }
+
+            // Calculate total hours
+            const [inHour, inMin] = clockIn.split(':').map(Number);
+            const [outHour, outMin] = clockOut.split(':').map(Number);
+            const totalMinutes = (outHour * 60 + outMin) - (inHour * 60 + inMin);
+            const totalHours = (totalMinutes / 60).toFixed(2);
+            
+            const newEntry = {
+                id: Date.now(), // Unique ID for each entry
+                date: date,
+                clockIn: clockIn,
+                clockOut: clockOut,
+                totalHours: totalHours,
+                overtime: overtime,
+                isSickLeave: isSickLeave,
+                isVacation: isVacation,
+                isLate: isLate,
+                notes: notes,
+            };
+            
+            const entries = loadEntries();
+            entries.push(newEntry);
+            saveEntries(entries);
+            
+            showMessage('Entry saved successfully!');
+            attendanceForm.reset();
+            renderHistory();
+        });
+
+        // Generate Email Functionality
+        generateEmailBtn.addEventListener('click', () => {
+            const recipient = emailRecipientInput.value;
+            const yourName = yourNameInput.value.trim();
+            if (!recipient) {
+                showMessage('Please enter a manager\'s email.', true);
+                return;
+            }
+            if (selectedEntries.length === 0) {
+                showMessage('Please select at least one entry from the history list.', true);
+                return;
+            }
+
+            // Sort entries by date for a chronological email body
+            selectedEntries.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+            const subject = `Attendance Summary - ${selectedEntries.length} Days`;
+            
+            let body = `Hello,
+I am writing to provide a summary of my recent attendance.
+
+`;
+            
+            selectedEntries.forEach(entry => {
+                const formattedDate = new Date(entry.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+                const status = [];
+                if (entry.isLate) status.push('Late Arrival');
+                if (entry.isSickLeave) status.push('Sick Leave');
+                if (entry.isVacation) status.push('Vacation');
+                if (status.length === 0) status.push('Regular Attendance');
+
+                body += `---
+Date: ${formattedDate}
+Status: ${status.join(', ')}
+Clock In: ${entry.clockIn}
+Clock Out: ${entry.clockOut}
+Total Hours: ${entry.totalHours}
+Overtime: ${entry.overtime} hours
+Reason: ${entry.notes || 'N/A'}
+
+`;
+            });
+
+            body += `
+Best,
+${yourName || '[Your Name]'}`;
+
+            const mailtoLink = `mailto:${recipient}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            window.location.href = mailtoLink;
+        });
+
+        // Initial render on page load
+        window.onload = renderHistory;
+
+    </script>
+</body>
+</html>
