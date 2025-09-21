@@ -271,7 +271,7 @@
             renderHistory();
         });
 
-        // Generate Email Functionality
+        // Generate Email Functionality (now uses mailto link)
         generateEmailBtn.addEventListener('click', () => {
             const recipient = emailRecipientInput.value;
             const yourName = yourNameInput.value.trim();
@@ -286,7 +286,6 @@
 
             // Sort entries by date for a chronological email body
             selectedEntries.sort((a, b) => new Date(a.date) - new Date(b.date));
-            const subject = `Attendance Summary - ${selectedEntries.length} Days`;
             const newLine = '\n';
             let body = `Hello,${newLine}I am writing to provide a summary of my recent attendance.${newLine}${newLine}`;
             
@@ -310,8 +309,11 @@
             });
 
             body += `Best,${newLine}${yourName || '[Your Name]'}`;
-
+            
+            // Build the mailto link with encoded subject and body
+            const subject = `Attendance Summary - ${selectedEntries.length} Days`;
             const mailtoLink = `mailto:${recipient}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
             window.location.href = mailtoLink;
         });
 
